@@ -19,6 +19,11 @@ RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
 
 COPY --from=builder /app/build ./build
 
+EXPOSE 3000
+
 USER node
 
-ENTRYPOINT ["node", "build/index.js"]
+# Default to stdio transport; set TRANSPORT=http for HTTP mode
+ENV TRANSPORT=stdio
+
+ENTRYPOINT ["sh", "-c", "if [ \"$TRANSPORT\" = \"http\" ]; then exec node build/http.js; else exec node build/index.js; fi"]

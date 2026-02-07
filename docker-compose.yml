@@ -1,7 +1,20 @@
 services:
+  # stdio transport (for Claude Desktop / Claude Code)
   mealie-mcp-server:
     build: .
     stdin_open: true
     environment:
       - MEALIE_URL=${MEALIE_URL}
       - MEALIE_API_TOKEN=${MEALIE_API_TOKEN}
+
+  # HTTP transport (for web clients / remote access)
+  mealie-mcp-server-http:
+    build: .
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      - TRANSPORT=http
+      - MEALIE_URL=${MEALIE_URL}
+      - MEALIE_API_TOKEN=${MEALIE_API_TOKEN}
+      - MCP_AUTH_TOKEN=${MCP_AUTH_TOKEN}
+      - PORT=3000
