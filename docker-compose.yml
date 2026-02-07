@@ -1,0 +1,7 @@
+services:
+  mealie-mcp-server:
+    build: .
+    stdin_open: true
+    environment:
+      - MEALIE_URL=${MEALIE_URL}
+      - MEALIE_API_TOKEN=${MEALIE_API_TOKEN}
