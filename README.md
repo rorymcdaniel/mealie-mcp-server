@@ -28,6 +28,20 @@ The server supports two transports:
 | **stdio** (default) | Claude Desktop, Claude Code, local MCP clients | `build/index.js` |
 | **Streamable HTTP** | Claude.ai web/mobile, remote access, multi-user | `build/http.js` |
 
+## Authentication
+
+There are two separate auth layers — one for the server to talk to Mealie, and one for clients to talk to the server:
+
+```
+Claude.ai ──OAuth 2.0──▶ MCP Server ──API Token──▶ Mealie
+```
+
+1. **Mealie API Token** (`MEALIE_API_TOKEN`) — The server's backend credential for accessing Mealie's REST API. Required for both transports. Generate one at `<your-mealie-url>/user/profile/api-tokens`.
+
+2. **OAuth 2.0 + PKCE** (HTTP transport only) — How remote clients like Claude.ai authenticate to the MCP server. Users log in with their **Mealie username and password** via a browser-based flow. The server validates credentials against Mealie and issues OAuth tokens. Not used with stdio transport.
+
+In short: the API token lets the server access recipes, and OAuth lets users prove who they are.
+
 ## Configuration
 
 Copy `.env.example` to `.env` and fill in your values:
