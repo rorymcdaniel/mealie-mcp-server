@@ -1,0 +1,13 @@
+node_modules/
+build/
+coverage/
+.env
+*.tgz
+.DS_Store
+
+# Claude Code project files (local only)
+.claude/
+CLAUDE.md
+
+# Local nginx config (use nginx-mcp.conf.example as template)
+nginx-mcp.conf

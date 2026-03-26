@@ -1,0 +1,33 @@
+services:
+  # stdio transport (for Claude Desktop / Claude Code)
+  mealie-mcp-server:
+    build: .
+    stdin_open: true
+    environment:
+      - MEALIE_URL=${MEALIE_URL}
+      - MEALIE_API_TOKEN=${MEALIE_API_TOKEN}
+
+  # HTTP transport with OAuth (for Claude web/mobile)
+  mealie-mcp-server-http:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      - TRANSPORT=http
+      - MEALIE_URL=${MEALIE_URL}
+      - MEALIE_API_TOKEN=${MEALIE_API_TOKEN}
+      - MCP_SERVER_URL=${MCP_SERVER_URL}
+      - PORT=3000
+    networks:
+      - default
+      - mealie
+
+networks:
+  mealie:
+    # If your Mealie instance runs in a separate Docker Compose project,
+    # set this to the name of that project's network so the MCP server
+    # can reach Mealie by container name (e.g. http://mealie:9000).
+    # Find the network name with: docker network ls
+    external: true
+    name: ${MEALIE_DOCKER_NETWORK:-docker_mealie_network}

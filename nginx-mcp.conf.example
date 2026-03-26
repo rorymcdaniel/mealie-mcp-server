@@ -1,0 +1,81 @@
+# Nginx location blocks to add to the existing <your-domain> server block.
+# These proxy MCP and OAuth traffic to the mealie-mcp-server-http container
+# while leaving all other traffic going to Mealie as before.
+#
+# The MCP HTTP container should be running on port 3001 (or whichever port you map).
+# Update the $mcp_port variable below to match.
+#
+# Add these blocks INSIDE the existing server { ... } block for your domain,
+# ABOVE the existing location / { ... } block.
+
+set $mcp_port 3001;
+
+# OAuth well-known metadata endpoints
+location /.well-known/oauth-protected-resource/mcp {
+    proxy_pass http://127.0.0.1:$mcp_port;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
+
+location /.well-known/oauth-authorization-server {
+    proxy_pass http://127.0.0.1:$mcp_port;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
+
+# OAuth endpoints
+location /authorize {
+    proxy_pass http://127.0.0.1:$mcp_port;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
+
+location /token {
+    proxy_pass http://127.0.0.1:$mcp_port;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
+
+location /register {
+    proxy_pass http://127.0.0.1:$mcp_port;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
+
+location /revoke {
+    proxy_pass http://127.0.0.1:$mcp_port;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
+
+# MCP endpoint (Streamable HTTP)
+location /mcp {
+    proxy_pass http://127.0.0.1:$mcp_port;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+
+    # SSE support for MCP streaming responses
+    proxy_buffering off;
+    proxy_cache off;
+    proxy_read_timeout 300s;
+}
+
+# Health check (optional)
+location /health {
+    proxy_pass http://127.0.0.1:$mcp_port;
+    proxy_set_header Host $host;
+}
